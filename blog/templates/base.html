@@ -1,0 +1,168 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %} Blog {% endblock %}</title>
+
+    <link rel="icon" href="{{ MEDIA_URL }}logo/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ MEDIA_URL }}logo/favicon.ico" type="image/x-icon">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <style>
+        .navbar-toggler:hover,
+        .navbar-toggler:focus {
+            border: none;       /* border remove */
+            box-shadow: none;   /* focus er glow remove */
+        }
+        .btn-white{
+        background: white;
+        }
+        .text-lightpro{
+          color: #bcbfc2;
+        }
+        .bg-custom-title{
+           background : linear-gradient(90deg,rgba(252, 235, 242, 1) 10%, rgba(255, 255, 255, 1) 70%);
+           padding: 5px;
+        }
+        .comment-thread {
+          position: relative;
+          margin-left: 20px;
+          border-left: 3px solid #dc3545; /* Bootstrap gray */
+          padding-left: 15px;
+        }
+
+        .comment-item {
+          position: relative;
+          margin-bottom: 12px;
+        }
+
+        .comment-item .line {
+          width: 10px;
+          height: 10px;
+          background: #dc3545; /* Bootstrap red dot */
+          border-radius: 50%;
+          position: absolute;
+          left: -21px;
+          top: 4px;
+        }
+
+        .comment-content {
+          font-size: 0.9rem;
+          color: #444;
+        }
+        .user-thumb{
+          height: 50px;
+          width: 50px;
+          border-radius: 50%;
+          border: 2px solid #cf0c0c;
+          padding: 2px;
+        }
+
+        .comment-thumb{
+          height: 30px;
+          width: 30px;
+          border-radius: 50%;
+          border: 1px solid lightgray;
+        }
+
+        .logo {
+            height:30px;
+        }
+        .logo-foot {
+            height:20px;
+        }
+
+        .bg-foot{
+           background: white;
+        }
+
+        .cmnt-cc{
+
+           border-radius : 50%;
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
+      <div class="container-fluid ">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <img class="logo" src="{{ MEDIA_URL }}logo/logov3.png" alt="🅱️log" >
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ">
+              {% load app_icons %}
+              {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'profile' %}">
+                        <span> {% get_icon "profile" size=24 %} </span>
+                        <span>{{ user.username }}</span>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="{% url 'create_post' %}">
+                        <span> {% get_icon "post_new" size=24 %} </span>
+                        <span>New Post</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link btn btn-link text-decoration-none">
+                            <span> {% get_icon "logout" size=24 %} </span>
+                            <span>Logout</span>
+                        </button>
+                    </form>
+                </li>
+              {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">
+                        <span> {% get_icon "user_circle" size=24 %} </span>
+                        <span>Log in</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'signup' %}">
+                        <span> {% get_icon "user_add" size=24 %} </span>
+                        <span>Sign Up</span>
+                    </a>
+                </li>
+              {% endif %}
+          </ul>
+        </div>
+      </div>
+</nav>
+
+    <main class="pb-5 pt-4">
+
+        {% block content %}
+        <!--  child template content  -->
+        {% endblock %}
+
+    </main>
+
+
+
+      <footer class="position-fixed text-center bottom-0 w-100 p-0  ">
+        <div class="d-flex bg-foot justify-content-between align-items-center h-100 ">
+          <p class="m-0 w-100 py-2  shadow border border-light text-lightpro">
+                <span><img class="logo-foot " src="{{ MEDIA_URL }}logo/logov3.png" alt="🅱️log" ></span>
+                <span><i><b>2025<i class="text-danger px-1">&bull;</i>The Best Never Rest</b></i></span>
+          </p>
+        </div>
+      </footer>
+
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Home Page -Blog{% endblock %}
+
+{% block content %}
+
+{% for post in posts %}
+<div class="card shadow-sm border mb-3" style="width: 92%; margin: 0 20px;">
+    <div class="card-body ">
+        <div class="d-flex justify-content-between">
+            <div class="w-100 pb-0">
+                <a class="text-decoration-none " href="{% url 'post_detail' post.pk %}">
+                    <p>
+                        {% load humanize %}
+                        <small class="badge text-danger p-1 fst-italic  bg-light">
+                            {{ post.created_at|naturaltime }}</small>
+                    </p>
+                    <h4
+                            class="card-title bg-custom-title text-dark p-2 rounded ">{{ post.title }}</h4>
+                    <p class="card-text text-muted">{{ post.content|truncatewords:5 }} ...</p>
+                </a>
+                <p>
+                    <!--                           <form class=" shadow-sm d-flex text-danger me-2 mt-2 bg-light border border-2 border-muted rounded" method="post" action="{% url 'add_comment' post.pk %}">-->
+                    <!--                                {% csrf_token %}-->
+                    <!--                                <input name="text" class="form-control form-control-sm border-0"-->
+                    <!--                                 placeholder="Quick Reply...">-->
+                    <!--                                <button type="submit" class="btn btn-sm bg-white text-danger">➤</button>-->
+                    <!--                           </form>-->
+                    {% if request.user.is_authenticated %}
+                        <span class="text-lightpro badge p-1" style="border-radius:0">
+                            <i><b class="fs-5 text-info">{{ post.total_likes }}</b>&nbsp;<sub>thumb</sub></i>
+                        </span>
+                        <span class="text-secondary">&bull;</span>
+                        <span class="text-dark fst-italic badge p-1" style="border-radius:0">
+                               {% if  post.total_comments  %}
+                                  <span class="text-danger fs-5">{{ post.total_comments}}</span> Replied
+                               {% else %}
+                                   <span class="text-info">Be the first to reply</span>
+                               {% endif %}
+                        </span>
+                    {% else %}
+                        <span class="badge text-light bg-info">Log in to read full post!</span>
+                    {% endif %}
+                </p>
+            </div>
+
+            {% load app_icons %}
+            {% load post_extras %}
+            <div class="m-auto bg-light shadow-sm p-2 rounded ms-2 d-flex flex-column justify-content-center align-items-center">
+                <div class="mb-2 text-center">
+                    <button class="btn btn-white text-secondary shadow-sm">
+                         {% get_icon "requote" %}
+                    </button>
+                </div>
+                <div class="text-center">
+
+                    {% if request.user.is_authenticated %}
+
+                    <form action="{% url 'toggle_like' post.pk %}" method="post">
+                        {% csrf_token %}
+                        {% if post|liked_by_user:user %}
+                        <button type="submit" class="btn btn-info shadow-sm text-light">
+                            {% get_icon "thumb" %}
+                        </button>
+                        {% else %}
+                        <button type="submit" class="btn btn-white text-secondary shadow-sm">
+                            {% get_icon "thumb" %}
+                        </button>
+                        {% endif %}
+                    </form>
+
+                    {% else %}
+                               <span class="text-info badge p-0" style="border-radius:0">
+                                       <b class="fs-6 fst-italic text-info">{{ post.total_likes }}</b>
+                                       {% get_icon "thumb" size=15 %}
+                               </span>
+
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

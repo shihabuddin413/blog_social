@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Signup Page -Blog{% endblock %}
+
+{% block content %}
+
+    <div class="container p-2  ">
+        <div class="p-4 ">
+          <h2>Create A New Account</h2>
+            <hr>
+          <form method="post">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+              </div>
+          </form>
+          <br>
+          <p>Don't have an account? <a href="{% url 'login' %}">Login</a></p>
+         </div>
+    </div>
+{% endblock %}

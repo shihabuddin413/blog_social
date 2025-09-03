@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}{{ request.user.username }}'s Profile -Blog{% endblock %}
+
+{% block content %}
+
+<div class="container pt-4">
+    <div class="row">
+        <!-- Profile Card -->
+        {% load app_icons %}
+        <div class="col-md-4 mb-2 ">
+            <div class="card shadow-sm p-3 rounded-3 border-0">
+                <img src="{{ request.user.userprofile.profile_image.url }}"
+                     class="rounded-circle  mb-3 shadow"
+                     width="150" height="150" alt="Profile Image">
+                <h4 class="fw-bold ">{{ request.user.username }}</h4>
+                <p class="text-muted border-5 border-start ms-2 ps-2"><small>{{ request.user.email }}
+                    <br><strong>posting since </strong>
+                    {{ request.user.date_joined|date:"F d, Y" }}</small></p>
+
+                <p class="" style="background:whitesmoke; padding:3px 10px; border-radius: 5px ;">
+
+                    <span>
+                        <b>
+                    <i>{{ request.user.userprofile.bio|default:"No bio added yet." }}</i>
+                    </b></span>
+                </p>
+                <div>
+                    <span class="badge  p-1 text-lightpro rounded">Actions</span>
+                </div>
+                <div>
+                    <a href="{% url 'edit_profile' %}"
+                       class="badge text-danger text-decoration-none bg-light">
+                        {% get_icon "user_profile_edit" %} Edit Profile
+                    </a>
+                    <a href="{% url 'home' %}"
+                       class="badge  text-danger text-decoration-none bg-light">
+                        {% get_icon "inbox" %} Inbox
+                    </a>
+                    <a href="{% url 'home' %}"
+                       class="badge  text-danger text-decoration-none bg-light">
+                        {% get_icon "requote" %} Activity
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick posting -->
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4 rounded-3 mb-4 border-0">
+                <span class="badge text-danger py-2 border-bottom " style="border-radius:0">Create a new post </span>
+
+
+                <form method="post" action="{% url 'create_post' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <input
+                                type="text"
+                                name="title"
+                                class="form-control border-0"
+                                placeholder="Title"
+                                required>
+                    </div>
+                    <div class="mb-3">
+                    <textarea
+                            name="content"
+                            class="form-control border-0"
+                            rows="2"
+                            placeholder="Describe the whole content .."
+                            required></textarea>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-sm btn-danger ">Post</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card shadow-sm p-3 rounded-3 mb-5 pb-5 border-0">
+                <h5 class="mb-3">{% get_icon "post_list" %} Your Posts</h5>
+                <div class="list-group">
+                    {% for post in posts %}
+
+                    <div
+                            class="list-group-item d-flex justify-content-between align-items-center  mb-2 bg-light border-0 rounded ">
+                        <div>
+                            <div class="mb-2">
+                            <span class="badge bg-light py-1 text-dark border ">
+                            {{ post.created_at }}
+                            </span>
+                            </div>
+                            <div class=" ">
+                                <a class="text-info" href="{% url 'post_detail' post.pk %}">
+                                    {{ post.title|truncatewords:5 }}</a>
+                            </div>
+                        </div>
+
+
+                        <div>
+                            <div class=" d-grid gap-2 mb-2">
+                                <!-- Edit Button -->
+                                <button type="button" class="btn btn-sm btn-primary  "
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editModal{{ post.pk }}">
+                                    <B>{% get_icon "edit_post" %}</B>
+                                </button>
+                            </div>
+                            <!-- Delete Button -->
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-sm  btn-danger  "
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal{{ post.pk }}">
+                                    <B>{% get_icon "post_del" %}</B>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Modal -->
+                    <div class="modal fade" id="editModal{{ post.pk }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form method="post" action="{% url 'edit_post' post.pk %}">
+                                    {% csrf_token %}
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Edit Post</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">Title</label>
+                                            <input type="text" name="title" value="{{ post.title }}"
+                                                   class="form-control" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Content</label>
+                                            <textarea name="content" class="form-control" rows="6" required>{{ post.content}}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delete Modal -->
+                    <div class="modal fade" id="deleteModal{{ post.pk }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form method="post" action="{% url 'delete_post' post.pk %}">
+                                    {% csrf_token %}
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Delete Post</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete "{{ post.title }}"?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
