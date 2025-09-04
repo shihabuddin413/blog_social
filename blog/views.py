@@ -3,10 +3,12 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render,redirect, get_object_or_404, redirect
+from django.urls import reverse
 
 
-from .models import Post, Like
-from .forms import PostForm, CustomUserCreationForm, CustomLoginForm, UserForm, UserProfileForm, CommentForm
+from .models import Post, Like, Requote
+from .forms import PostForm, CustomUserCreationForm, CustomLoginForm, UserForm, UserProfileForm, CommentForm, \
+    RequoteForm
 
 
 # Create your views here.
@@ -54,8 +56,17 @@ def create_post(request):
 
 @login_required
 def profile(request):
-    posts = request.user.posts.all()
-    return render (request, 'blog/profile.html', {'posts': posts})
+    view_type  = request.GET.get('view', 'posts')
+    if view_type == 'requotes':
+        items =  Requote.objects.filter (user=request.user).order_by('-created_at')
+    else:
+        items = Post.objects.filter(author=request.user).order_by('-created_at')
+
+    # posts = request.user.posts.all()
+    return render(request, 'blog/profile.html', {
+        "view_type": view_type,
+        "items": items,
+    })
 
 @login_required
 def edit_profile(request):
@@ -117,3 +128,25 @@ def toggle_like(request, pk):
     if not created:
         like.delete()  # unlike
     return redirect('post_detail', pk=post.pk)
+
+@login_required
+def requote_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.method == 'POST':
+        form = RequoteForm(request.POST)
+        if form.is_valid():
+            requote = form.save(commit=False)
+            requote.user = request.user
+            requote.post = post
+            requote.save()
+            return redirect('profile')
+    else:
+        form = RequoteForm()
+    return render(request, 'blog/requote_modal.html', {'form': form, 'post': post})
+
+@login_required
+def delete_requote(request, pk):
+    requote = get_object_or_404(Requote, pk=pk, user=request.user)
+    if request.method == "POST":
+        requote.delete()
+        return redirect(f"{reverse('profile')}?view=requotes")  # back to profile page

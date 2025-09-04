@@ -5,8 +5,10 @@
 
 {% block content %}
 
+{% load app_icons %}
 {% load humanize %}
-        <div class="card mb-2 m-2" style="border:none;background: white;">
+
+        <div class="card pt-2 m-2 " style="border:none;background: white;">
           <!-- Header -->
           <div class="card-header d-flex justify-content-start align-items-center" style="border:none;background: white;">
               <img class="user-thumb me-2" src="{{post.author.userprofile.profile_image.url}}">
@@ -23,7 +25,7 @@
           <!-- Body -->
           <div class="card-body ">
             <h6 class="card-title mb-2">
-              <p class=" bg-custom-title p-2 fs-5 text-danger">{{ post.title }}</p>
+              <p class=" bg-bluelight rounded p-2 fs-5 text-dark">{{ post.title }}</p>
             </h6>
             <p class="card-text text-muted px-2 py-2 ">
                 <small>
@@ -33,78 +35,113 @@
           </div>
 
           <!-- Footer -->
-          <div class="card-footer bg-white d-flex justify-content-between align-items-center " style="border:none;background: white;">
-            <!-- Actions -->
-              <div style="width: 65%;">
-                  <form class="d-flex border rounded p-1" method="post"
-                        action="{% url 'add_comment' post.pk %}">
-                      {% csrf_token %}
-                      <input name="text" class="form-control form-control-sm border-0"
-                             placeholder="Quick Reply..." required>
-                      <button type="submit" class="btn btn-sm btn-danger text-light rounded" style="border-radius:0;">
-                        ➤
-                      </button>
-                  </form>
-              </div>
 
-            {% load app_icons %}
-            <div class="d-flex justify-content-end align-items-center">
+            <div class="card-footer bg-white d-flex justify-content-between align-items-center" style="border:none;">
+                <!-- Actions -->
+                <div class="flex-grow-1 me-2">
+                    <form class="d-flex  p-1" method="post" action="{% url 'add_comment' post.pk %}">
+                        {% csrf_token %}
+                        <input name="text"
+                               class="form-control form-control-sm border bg-white me-2"
+                               placeholder="Quick Reply..."  required>
+                        <button type="submit" class="btn btn-sm btn-light text-danger ">➤</button>
+                    </form>
+                </div>
 
+                <div class="d-flex justify-content-end align-items-center">
 
-              <button class="btn btn-sm btn-light text-info me-2">
-                 {% get_icon "requote" %}
-              </button>
-                <form action="{% url 'toggle_like' post.pk %}" method="post">
+                        <button  class="btn btn-sm btn-light text-info me-2"
+                             data-bs-toggle="modal"
+                             data-bs-target="#requoteModal{{ post.pk }}">{% get_icon "requote" %}</button>
+
+                        <!-- Requote Modal -->
+                        <div class="modal fade" id="requoteModal{{ post.pk }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form method="post" action="{% url 'requote_post' post.pk %}">
+                                        {% csrf_token %}
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Requote</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body" >
+                                            <textarea name="caption" class="form-control" rows="3" placeholder="Add your caption..."></textarea>
+                                            <hr>
+                                            <div class="border p-2 border text-start " >
+                                                <h6 class="bg-custom-title text-dark text-start p-2 rounded">{{ post.title }}</h6>
+                                                <p class="text-muted text-wrap text-start fs-6">
+                                                    {{ post.content|truncatewords:10 }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer d-flex">
+                                            <button type="button" class="btn btn-danger text-light" data-bs-dismiss="modal">Cancel
+                                            </button>
+                                            <button type="submit" class="btn btn-primary text-light">Requote</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form action="{% url 'toggle_like' post.pk %}" method="post">
                             {% csrf_token %}
                             {% load post_extras %}
                             {% if post|liked_by_user:user %}
-                      <button class="btn btn-sm btn-info text-light">
-                         <b>{{ post.total_likes }}</b>
-                          {% get_icon "thumb"  %}
-                      </button>
+                                <button class="btn btn-sm btn-info text-light">
+                                    <b>{{ post.total_likes }}</b> {% get_icon "thumb" size='15' %}
+                                </button>
                             {% else %}
-                      <button class="btn btn-sm btn-light text-info">
-                         <b>{{ post.total_likes }} </b>
-                          {% get_icon "thumb"  %}
-                      </button>
+                                <button class="btn btn-sm btn-light text-info">
+                                    <b>{{ post.total_likes }}</b> {% get_icon "thumb" size='15' %}
+                                </button>
                             {% endif %}
-                </form>
+                        </form>
+
+                </div>
             </div>
 
 
-          </div>
         </div>
 
         <!-- Comments Thread -->
         <div class="px-3 mt-2  pb-5">
 
-            <h6 class="text-danger pt-4 mb-3 p-2 border-bottom ">
-                <b>Comments</b>
-                <i>
-                    <b class="fs-5 text-info py-0 cmnt-cc ">({{ comments.count }})</b>&nbsp;
-                </i>
+            <h6 class="text-muted  pt-2 mb-3 ps-3  ">
+                <span class="bg-danger text-light p-1 px-3 rounded">
+                    <b >Comments  &bull;</b>
+                    <b class="fs-5 fst-italic text-light py-0 cmnt-cc "> {{ comments.count }}</b>
+                </span>
             </h6>
 
             <div class="comment-thread">
+
                 {% for comment in comments %}
-                <div class="comment-item">
+                <div class="comment-item bg-bluelight  p-2 rounded">
                     <div class="line"></div>
                     <div class="comment-content">
-                        <img class="comment-thumb mb-1"
-                          src="{{comment.author.userprofile.profile_image.url}}">
-                        <strong class="text-light badge bg-danger ">@{{ comment.author.username }} </strong>
-                        <span class="text-danger">&bull;</span>
 
-                        <small class="text-danger"> {{ comment.created_at|naturaltime }} </small>
-                        <p class="text-dark bg-light rounded ps-2 p-1 mb-2 fs-6 ">
-                            <small>{{ comment.text }}</small>
-                        </p>
+                        <div class="d-flex justify-content-start align-items-start mb-1">
+                            <div>
+                                <img class="comment-thumbnail" src="{{comment.author.userprofile.profile_image.url}}">
+                            </div>
+                            <div class="d-flex flex-column justify-content-start align-items-start ps-1">
+                                <strong class="badge text-light bg-info ">@{{ comment.author.username }}
+                                </strong>
+                                <small class=" text-lightpro rounded tiny-text">
+                                    {{ comment.created_at|naturaltime }}
+                                </small>
+                            </div>
+                        </div>
+
+                        <p class="text-dark rounded ps-2 p-1 mb-2 fs-6 "><small>{{ comment.text }}</small></p>
                     </div>
                 </div>
                 {% empty %}
                     <p class="text-muted">No comments yet.</p>
                 {% endfor %}
+
             </div>
+
         </div>
 
         <!-- Comments Thread

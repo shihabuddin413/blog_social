@@ -5,21 +5,33 @@
 {% block content %}
 
 {% for post in posts %}
-<div class="card shadow-sm border mb-3" style="width: 92%; margin: 0 20px;">
-    <div class="card-body ">
+<div class="card shadow bg-custom-post-head  mb-3" style="width: 94%; margin: 25px 15px; border:none;">
+    <div class="card-body">
         <div class="d-flex justify-content-between">
             <div class="w-100 pb-0">
                 <a class="text-decoration-none " href="{% url 'post_detail' post.pk %}">
-                    <p>
+
+                    <div
+                            class="d-flex justify-content-start align-items-center ps-2 p-1 bg-custom-post-head mb-2 rounded" >
+                        <div class="">
+                            <img class="post-user-thumb"
+                                 src="{{ post.author.userprofile.profile_image.url }}" alt="">
                         {% load humanize %}
-                        <small class="badge text-danger p-1 fst-italic  bg-light">
-                            {{ post.created_at|naturaltime }}</small>
+                        </div>
+
+                        <div class="p-1">
+                            <p class="text-danger pm-zero"><b> {{ post.author.username }}</b></p>
+                            <p class="tiny-text  pm-zero text-dark fst-bold" >{{ post.created_at|naturaltime }}</p>
+                        </div>
+                    </div>
+
+                    <h4 class="card-title text-info py-2 ps-2 rounded "><b>{{ post.title }}</b></h4>
+                    <p class="card-text text-muted text-break text-wrap ps-2 ">
+                        <small>{{ post.content|truncatewords:50 }}</small>
                     </p>
-                    <h4
-                            class="card-title bg-custom-title text-dark p-2 rounded ">{{ post.title }}</h4>
-                    <p class="card-text text-muted">{{ post.content|truncatewords:5 }} ...</p>
+
                 </a>
-                <p>
+                <p class="pt-2 ps-1">
                     <!--                           <form class=" shadow-sm d-flex text-danger me-2 mt-2 bg-light border border-2 border-muted rounded" method="post" action="{% url 'add_comment' post.pk %}">-->
                     <!--                                {% csrf_token %}-->
                     <!--                                <input name="text" class="form-control form-control-sm border-0"-->
@@ -46,12 +58,42 @@
 
             {% load app_icons %}
             {% load post_extras %}
-            <div class="m-auto bg-light shadow-sm p-2 rounded ms-2 d-flex flex-column justify-content-center align-items-center">
+            <div
+                    class="m-auto bg-bluelight shadow-sm p-2 rounded ms-2 d-flex flex-column justify-content-center align-items-center">
                 <div class="mb-2 text-center">
-                    <button class="btn btn-white text-secondary shadow-sm">
+                    <button class="btn btn-white text-secondary shadow-sm" data-bs-toggle="modal" data-bs-target="#requoteModal{{ post.pk }}">
                          {% get_icon "requote" %}
                     </button>
+                    <!-- Requote Modal -->
+                        <div class="modal fade" id="requoteModal{{ post.pk }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form method="post" action="{% url 'requote_post' post.pk %}">
+                                        {% csrf_token %}
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Requote</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body" >
+                                            <textarea name="caption" class="form-control" rows="3" placeholder="Add your caption..."></textarea>
+                                            <hr>
+                                            <div class="border p-2 border text-start " >
+                                                <h6 class="bg-custom-title text-dark text-start p-2 rounded">{{ post.title }}</h6>
+                                                <p class="text-muted text-wrap text-start fs-6">
+                                                    {{ post.content|truncatewords:10 }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer d-flex">
+                                            <button type="button" class="btn btn-danger text-light" data-bs-dismiss="modal">Cancel
+                                            </button>
+                                            <button type="submit" class="btn btn-primary text-light">Requote</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                 </div>
+
                 <div class="text-center">
 
                     {% if request.user.is_authenticated %}

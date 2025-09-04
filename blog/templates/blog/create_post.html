@@ -4,16 +4,73 @@
 
 {% block content %}
 
-    <div class="px-3">
-          <a href="{% url 'home' %}" class="text-decoration-none">⬅ Back to Home</a>
-          <hr>
-          <h2>Create a New Post</h2>
-          <form method="post">
-              {% csrf_token %}
-              {{ form }}
-              <button type="submit" class="btn btn-primary ">Save Post</button>
-          </form>
-          <br>
+{% load app_icons %}
+
+<!--    <div class="px-3">-->
+
+<!--          <hr>-->
+<!--          <h2>Create a New Post</h2>-->
+<!--          <form method="post">-->
+<!--              {% csrf_token %}-->
+<!--              {{ form }}-->
+<!--              <button type="submit" class="btn btn-primary ">Save Post</button>-->
+<!--          </form>-->
+<!--          <br>-->
+<!--    </div>-->
+
+
+    <div class="my-3 d-flex justify-content-start align-items-center pt-3">
+        <div class="pe-2">
+            <a class="btn bg-bluelight ms-4 m-0" href="{% url 'home' %}" class="text-decoration-none">
+            {% get_icon 'home' %}
+            </a>
+        </div>
+        <div class="pt-2">
+            <h2 >Create a New Post</h2>
+        </div>
+    </div>
+
+    <div class="px-5">
+        <form method="post" action="{% url 'create_post' %}">
+
+            {% csrf_token %}
+
+            <div class="d-flex justify-content-start align-items-center mb-3">
+                <div>
+                    <span class="badge bg-bluelight text-dark p-1 " style="width:60px;">
+                        Title
+                    </span>
+                </div>
+                <div class="w-100">
+                    <input
+                        type="text"
+                        name="title"
+                        class="form-control border-0"
+                        placeholder="Post title here..."
+                        required>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-start align-items-start mb-3">
+                <div>
+                    <span class="badge mt-2 text-start text-dark bg-bluelight" style="width:60px;">
+                        Content
+                    </span>
+                </div>
+                <div class="w-100">
+                    <textarea
+                        name="content"
+                        class="form-control border-0"
+                        rows="8"
+                        placeholder="Describe the whole content ..."
+                        required></textarea>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-sm btn-danger ">Post</button>
+            </div>
+        </form>
     </div>
 
 {% endblock %}

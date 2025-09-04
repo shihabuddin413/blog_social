@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from .models import Post
 from .models import UserProfile
 from .models import Comment
-
+from .models import Requote
 
 class PostForm (forms.ModelForm):
     class Meta:
@@ -82,4 +82,15 @@ class CommentForm(forms.ModelForm):
         fields = ['text']
         widgets = {
             'text': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Write a comment...'})
+        }
+
+
+
+
+class RequoteForm(forms.ModelForm):
+    class Meta:
+        model = Requote
+        fields = ['caption']
+        widgets = {
+            'caption': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Add a caption...'}),
         }
