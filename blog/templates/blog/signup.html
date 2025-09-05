@@ -12,11 +12,11 @@
               {% csrf_token %}
               {{ form.as_p }}
               <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary">Sign Up</button>
+                <button type="submit" class="btn btn-danger">Sign Up</button>
               </div>
           </form>
           <br>
-          <p>Don't have an account? <a href="{% url 'login' %}">Login</a></p>
+          <p>Don't have an account? <a class="text-danger" href="{% url 'login' %}">Login</a></p>
          </div>
     </div>
 {% endblock %}

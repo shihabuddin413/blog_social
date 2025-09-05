@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<div class="container pt-4">
+<div class="container pt-4 destop-contianer-profile">
     <div class="row">
         <!-- Profile Card -->
         {% load app_icons %}
@@ -48,7 +48,8 @@
         <!-- Quick posting -->
         <div class="col-md-8">
             <div class="card shadow-sm p-4 rounded-3 mb-4 border-0">
-                <span class="badge text-danger py-2 border-bottom " style="border-radius:0">Create a new post </span>
+                <span class="badge bg-light text-dark py-2 text-start mb-3 " style="border-radius:0">Create a new post
+                </span>
 
 
                 <form method="post" action="{% url 'create_post' %}">
@@ -75,23 +76,19 @@
                 </form>
             </div>
             <div id="postContainer" class="card shadow-sm p-3 rounded-3 mb-5 pb-5 border-0">
-<!--<h5 class="mb-3">{% get_icon "post_list" %} Your Posts</h5>-->
-                <ul class="nav nav-tabs mb-3">
-                    <li class="nav-item">
-                        <a
-                                class="nav-link  {% if view_type == 'posts' %}bg-danger text-light active {% else %} text-muted {% endif %}"
-                           href="{% url 'profile' %}?view=posts#postContainer">
-                            {% get_icon "post_list" %} Posts
-                        </a>
+
+                <div aria-label="...">
+                  <ul class="pagination pagination-sm  ">
+                    <li class="page-item {% if view_type == 'posts' %} active {% else %} text-muted {% endif %}"
+                        aria-current="page">
+                      <a class="page-link" href="{% url 'profile' %}?view=posts#postContainer" >
+                          {% get_icon "post_list" %} Posts</a>
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link {% if view_type == 'requotes' %}bg-danger text-light active {% else %} text-muted {% endif %}"
-                           href="{% url 'profile' %}?view=requotes#postContainer">
-                            {% get_icon "reqt_post" size='16' %} Requotes
-                        </a>
+                    <li class="page-item {% if view_type == 'requotes' %} active {% else %} text-muted {% endif %}" aria-current="page">
+                      <a class="page-link" href="{% url 'profile' %}?view=requotes#postContainer" >{% get_icon "reqt_post" size='16' %} Requotes</a>
                     </li>
-                </ul>
+                  </ul>
+                </div>
 
 
                 {% if view_type == "posts" %}

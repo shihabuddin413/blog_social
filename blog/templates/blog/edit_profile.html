@@ -4,20 +4,98 @@
 
 {% block content %}
 
-    <div class="container mt-4">
-      <a href="{% url 'home' %}" class="text-decoration-none pb-3">⬅ Back to Home</a>
+   {% load app_icons %}
 
-      <h2 class="mt-4">Edit Profile</h2>
+    <div class="container desktop-wide mt-4">
+
+        <div class= "d-flex justify-content-start align-items-center ">
+            <div class=" pe-2 ">
+                <a class="btn bg-bluelight m-0" href="{% url 'home' %}" class="text-decoration-none">
+                {% get_icon 'home' %}
+                </a>
+            </div>
+            <div class="pt-2">
+                <h2 >Edit Profile </h2>
+            </div>
+        </div>
+
+
+      <h2 class="mt-4">
+          <img class=" user-thumb rounded-circle  mb-3 shadow-sm" width="150" height="150"
+               src="{{ user.userprofile.profile_image.url }}" alt="Profile Image">
+      </h2>
       <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="mb-3">
               {{ user_form.as_p }}
           </div>
-          <div class="mb-3">
-              {{ profile_form.as_p }}
+          <div>
+
           </div>
-          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <div class="mb-3">
+
+              {{ profile_form.as_p }}
+
+              <img id="img_preview" class="rounded-circle  mb-3 shadow-sm" width="100" height="100"
+               src="{{ user.userprofile.profile_image.url }}" alt="Profile Image">
+
+          </div>
+          <button type="submit" class="btn btn-danger ">Save Changes</button>
       </form>
 
     </div>
+
+    <script>
+        const style = document.createElement("style");
+              style.textContent = `
+
+
+                label {
+                  display: inline;
+                  width: 100px;
+                  font-weight: bold !important;
+                  padding-top: 5px;
+                  color: #db3545;
+                }
+
+                p {
+                  display: flex;
+
+                }
+
+
+
+                input[type="file"] {
+                  border: 2px solid white!important;
+                  padding: 6px;
+                  border-radius: 8px;
+                  cursor: pointer;
+                }
+
+                @media (min-width: 1024px) {
+                     .desktop-wide{
+                        width: 50vw;
+                     }
+                }
+
+
+                `;
+        document.head.appendChild(style);
+
+        var fileinput = document.getElementById('id_profile_image');
+
+        var img_prev = document.getElementById('img_preview')
+
+        fileinput.onchange = () => {
+            const file = fileinput.files[0]; // প্রথম নির্বাচিত ফাইল
+            if (file) {
+              img_prev.src = URL.createObjectURL(file);
+            }
+        }
+
+
+
+
+    </script>
+
 {% endblock %}

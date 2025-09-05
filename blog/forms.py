@@ -28,15 +28,15 @@ class PostForm (forms.ModelForm):
 class CustomUserCreationForm(UserCreationForm):
     username = forms.CharField(
         max_length=150,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}), help_text=""
+        widget=forms.TextInput(attrs={'class': 'form-control border-0 bg-bluelight', 'placeholder': 'Username'}), help_text=""
     )
     password1 = forms.CharField(
         label="Password",
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'})
+        widget=forms.PasswordInput(attrs={'class': 'form-control border-0 bg-bluelight', 'placeholder': 'Password'})
     )
     password2 = forms.CharField(
         label="Confirm Password",
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm Password'})
+        widget=forms.PasswordInput(attrs={'class': 'form-control border-0 bg-bluelight', 'placeholder': 'Confirm Password'})
     )
 
 
@@ -44,34 +44,37 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'password1', 'password2']
-        help_texts = {
-            'username': '',
-        }
 
 
 
 
 class CustomLoginForm(AuthenticationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control border-0 bg-bluelight', 'placeholder': 'Username'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control border-0 bg-bluelight', 'placeholder': 'Password'}))
 
 
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email']
+        labels = {
+            'email': 'Email',
+        }
         widgets = {
-            'username': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'username': forms.HiddenInput(attrs={'class': ''}),
+            'email': forms.EmailInput(attrs={'class': 'form-control border-0 bg-bluelight'}),
         }
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['bio', 'profile_image']
+        labels = {
+            'profile_image': 'Profile',
+        }
         widgets = {
-            'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'profile_image': forms.FileInput(attrs={'class': 'form-control'}),
+            'bio': forms.Textarea(attrs={'class': 'form-control border-0 bg-bluelight', 'rows': 3}),
+            'profile_image': forms.FileInput(attrs={'class': 'form-control form-control-sm border-0 bg-white '}),
         }
 
 

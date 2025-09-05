@@ -129,7 +129,7 @@
 
 
         .bg-custom-foot{
-            background : linear-gradient(90deg, rgba(255, 240, 240, 1) 10%,rgba(255, 255, 255, 1) 70%);
+            background : linear-gradient(90deg, rgba(255, 240, 240, 1) 10%, rgba(255, 255, 255, 1) 70%);
         }
 
         .bg-custom-nav{
@@ -140,8 +140,165 @@
             background : linear-gradient(90deg, rgba(255, 240, 240, 0.5) 10%,rgba(237, 242, 250, 0.5) 70%);
         }
 
+        .desktop-only {
+            display:none;
+        }
+
+        .desktop-footer{
+            display:none;
+        }
+
+        .page-link {
+            color: #dc3545;            /* text color (red for example) */
+            border:0;
+        }
+
+        /* On hover */
+        .page-link:hover {
+            color: white;
+            background-color: #dc3545; /* hover background */
+        }
+
+        /* Active page */
+        .page-item.active .page-link {
+            color: white;              /* active text */
+            background-color: #dc3545; /* active background */
+            border:0;    /* active border */
+        }
 
 
+
+        /* Mobile-first (default) */
+        body {
+            width: 100%;         /* mobile full width */
+            margin: 0 auto;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        /* Tablets */
+        @media (min-width: 768px) {
+            body {
+                width: 50%;       /* tablet width 50% */
+                margin: 0 auto;
+                min-height: 100vh;
+                display: flex;
+                justify-content: flex-start;
+                align-items: start;
+                flex-direction: column;
+                overflow-y: auto;
+            }
+        }
+
+        /* Desktop  Laptop sidebar */
+
+        @media (min-width: 1024px) {
+
+            .desktop-only{
+                display: block;
+            }
+
+            .navbar {
+                width: 400px;
+                height: 100vh;
+                position: fixed;
+                top: 0;
+                left: 0;
+                flex-direction: column !important; /* vertical stacking */
+                justify-content: flex-start !important; /* start from top */
+                align-items: stretch !important;
+                padding-top: 20px;
+                box-shadow: none !important ;
+                background: #fff !important;
+                padding-left:200px;
+                overflow-y: auto;
+            }
+
+            /* Container-fluid as flex column */
+            .navbar .container-fluid {
+                display: flex !important;
+                flex-direction: column !important;
+                height: 100%;
+                padding: 5px;
+            }
+
+            /* Brand at top */
+            .navbar-brand {
+                margin-bottom: 20px;
+                text-align: left !important;
+            }
+
+            /* Collapse/nav-items vertical stack */
+            #navbarNav {
+                display: flex !important;
+                flex-direction: column !important;
+                width: 100%;
+            }
+
+            .navbar-nav {
+                flex-direction: column !important;
+                width: 100%;
+            }
+
+            .nav-item {
+                width: 100%;
+                margin-bottom: 5px;
+                background: #e8f0fc66;
+                border-radius: 5px;
+            }
+
+
+
+            .nav-link {
+                width: 100%;
+                padding: 10px 20px;
+                color: black;
+            }
+
+            .nav-link:hover {
+                background-color: rgba(255, 240, 240, 0.5);
+            }
+
+            .desktop-card{
+               background: #e8f0fc44!important;
+               box-shadow: none!important;
+               border: 0px solid #ccc !important;
+               border-radius: 5px;
+               margin-top: 10px!important;
+               margin-left: 150px;
+            }
+
+            .desktop-post-form{
+               width: 50vw!important;
+            }
+
+            .destop-contianer-profile{
+              width: 60vw!important;
+            }
+
+            footer  {
+              display:none;
+            }
+
+            .desktop-footer{
+               display: block;
+               margin-bottom: 5rem;
+            }
+
+            main {
+                margin-left: 100px; /* push content right of sidebar */
+                padding: 0px 20px !important;
+                max-height: 100vh;
+                overflow-y: auto;
+                scrollbar-width: none;
+            }
+
+            /* Chrome, Edge, Safari */
+            main::-webkit-scrollbar {
+                width: 0px;            /* hide scrollbar */
+                background: transparent; /* optional */
+            }
+        }
 
     </style>
 </head>
@@ -160,12 +317,18 @@
               {% load app_icons %}
               {% if user.is_authenticated %}
                 <li class="nav-item">
+                    <a class="nav-link desktop-only" href="{% url 'home' %}">
+                        <span> {% get_icon "home" size=24 %} </span>
+                        <span> Feed </span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'profile' %}">
                         <span> {% get_icon "profile" size=24 %} </span>
                         <span>{{ user.username }}</span>
                     </a>
                 </li>
-               <li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'profile' %}">
                         <span> {% get_icon "inbox" size=24 %} </span>
                         <span>inbox</span>
@@ -180,10 +343,10 @@
                 <li class="nav-item">
                     <form method="post" action="{% url 'logout' %}" style="display:inline;">
                         {% csrf_token %}
-                        <button type="submit" class="nav-link btn btn-link text-decoration-none">
+                        <a type="submit" class="nav-link ">
                             <span> {% get_icon "logout" size=24 %} </span>
                             <span>Logout</span>
-                        </button>
+                        </a>
                     </form>
                 </li>
               {% else %}
@@ -203,11 +366,19 @@
           </ul>
         </div>
       </div>
+
+        <div class="">
+          <p class="mb-5 w-100 ps-3 border-start  border-4 border-danger text-lightpro desktop-footer" >
+                <span><img class="logo-foot " src="{{ MEDIA_URL }}logo/logov3trans.png" alt="🅱️log" ></span>
+                <span><i><b>2025<i class="text-danger px-1">&bull; <br></i>The Best Never Rest</b></i></span>
+          </p>
+        </div>
+
 </nav>
 
-    <main class=" py-5 bg-white">
+    <main class="py-5 bg-white">
         {% block content %}
-        <!--  child template content  -->
+            <!--  child template content  -->
         {% endblock %}
 
     </main>
@@ -216,7 +387,7 @@
 
       <footer class="position-fixed text-center bottom-0 w-100 p-0  ">
         <div class="d-flex bg-foot justify-content-between align-items-center h-100 ">
-          <p class="m-0 w-100 py-2 bg-custom-foot  shadow border border-light text-lightpro">
+          <p class="m-0 w-100 py-2 bg-custom-foot shadow border-light text-lightpro">
                 <span><img class="logo-foot " src="{{ MEDIA_URL }}logo/logov3trans.png" alt="🅱️log" ></span>
                 <span><i><b>2025<i class="text-danger px-1">&bull;</i>The Best Never Rest</b></i></span>
           </p>

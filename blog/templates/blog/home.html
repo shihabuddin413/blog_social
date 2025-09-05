@@ -5,14 +5,14 @@
 {% block content %}
 
 {% for post in posts %}
-<div class="card shadow bg-custom-post-head  mb-3" style="width: 94%; margin: 25px 15px; border:none;">
+<div class="card shadow bg-custom-post-head mb-3 desktop-card" style="width: 94%; margin: 25px 15px; border:none;">
     <div class="card-body">
         <div class="d-flex justify-content-between">
             <div class="w-100 pb-0">
                 <a class="text-decoration-none " href="{% url 'post_detail' post.pk %}">
 
                     <div
-                            class="d-flex justify-content-start align-items-center ps-2 p-1 bg-custom-post-head mb-2 rounded" >
+                            class="d-flex justify-content-start align-items-center ps-2 p-1  mb-2 rounded" >
                         <div class="">
                             <img class="post-user-thumb"
                                  src="{{ post.author.userprofile.profile_image.url }}" alt="">
