@@ -4,9 +4,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render,redirect, get_object_or_404, redirect
 from django.urls import reverse
+from itertools import chain
+from .models import Activity
+from django.utils.timezone import now
 
+from django.db import models
 
-from .models import Post, Like, Requote
+from .models import Post, Like, Requote, Comment
 from .forms import PostForm, CustomUserCreationForm, CustomLoginForm, UserForm, UserProfileForm, CommentForm, \
     RequoteForm
 
@@ -42,7 +46,7 @@ def post_detail(request, pk):
 @login_required
 def create_post(request):
     if request.method == 'POST':
-        form = PostForm (request.POST)
+        form = PostForm (request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
@@ -91,7 +95,7 @@ def edit_profile(request):
 def edit_post(request, pk):
     post = get_object_or_404(Post, pk=pk, author=request.user)
     if request.method == 'POST':
-        form = PostForm(request.POST, instance=post)
+        form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
             form.save()
             return redirect ('profile')
@@ -150,3 +154,46 @@ def delete_requote(request, pk):
     if request.method == "POST":
         requote.delete()
         return redirect(f"{reverse('profile')}?view=requotes")  # back to profile page
+
+@login_required
+def delete_activity (request, pk, activity_type=None):
+
+    activity_type_list = {
+        'requote':Requote,
+        'comment':Comment,
+        'like':Like,
+        'post':Post
+    }
+
+
+    if activity_type == 'comment' or activity_type == 'post':
+        activity_obj = get_object_or_404(activity_type_list[activity_type], pk=pk, author=request.user)
+    else:
+        activity_obj = get_object_or_404(activity_type_list[activity_type], pk=pk, user=request.user)
+
+    if request.method == "POST":
+        activity_obj.delete()
+        return redirect('activity_page')
+
+@login_required
+def activity_page(request):
+    user = request.user
+
+    # Collect activities
+    posts = Post.objects.filter(author=user).annotate(activity_type=models.Value('post', output_field=models.CharField()))
+    requotes = Requote.objects.filter(user=user).annotate(activity_type=models.Value('requote', output_field=models.CharField()))
+    comments = Comment.objects.filter(author=user).annotate(activity_type=models.Value('comment', output_field=models.CharField()))
+    likes = Like.objects.filter(user=user).annotate(activity_type=models.Value('like', output_field=models.CharField()))
+
+    # Merge & sort by created_at
+    activities = sorted(
+        chain(posts, requotes, comments, likes),
+        key=lambda x: x.created_at,
+        reverse=True
+    )
+
+    return render(request, "blog/activity.html", {"activities": activities})
+
+
+
+

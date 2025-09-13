@@ -10,7 +10,7 @@ from .models import Requote
 class PostForm (forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content']
+        fields = ['title', 'content', 'image']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control my-2',
@@ -18,6 +18,11 @@ class PostForm (forms.ModelForm):
             }),
             'content': forms.Textarea(attrs={
                 'class': 'form-control my-2',
+                'placeholder': 'Write your content',
+                'rows': 5
+            }),
+            'image': forms.FileInput(attrs={
+                'class': 'form-control my-2 border-0 bg-danger text-light',
                 'placeholder': 'Write your content',
                 'rows': 5
             }),

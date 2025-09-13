@@ -1,3 +1,4 @@
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -7,6 +8,7 @@ class Post (models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts", null=True)
+    image = models.ImageField(upload_to='post_images/', blank=True, null=True)  # New field
 
     def total_likes (self):
         if self.likes.count():
@@ -32,6 +34,7 @@ class Post (models.Model):
 class Like (models.Model):
     post = models.ForeignKey(Post, related_name="likes", on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)  # ADD THIS
 
     class Meta:
         unique_together = ('post', 'user')  # prevent duplicate likes
@@ -64,3 +67,26 @@ class Requote(models.Model):
 
     def __str__(self):
         return f"{self.user.username} requoted {self.post.title}"
+
+
+
+
+class Activity(models.Model):
+    ACTION_CHOICES = [
+        ('post', 'Posted'),
+        ('comment', 'Commented'),
+        ('like', 'Liked'),
+        ('requote', 'Requoted'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activities')
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES)
+    content = models.TextField(blank=True, null=True)  # Optional description
+    related_post = models.ForeignKey('Post', on_delete=models.CASCADE, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.username} {self.get_action_display()} at {self.created_at}"

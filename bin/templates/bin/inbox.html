@@ -1,0 +1,22 @@
+{% extends "bin/base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h4>BIN <span class="text-danger">—</span> Inbox</h4>
+  <div class="list-group mt-3">
+    {% for item in conversations %}
+      <a href="{% url 'bin_conversation' item.conv.pk %}"
+         class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+        <div>
+          <strong>{{ item.other.username|default:"Group" }}</strong>
+          <div class="small text-muted">
+            {{ item.conv.messages.last.content|truncatechars:50 }}
+          </div>
+        </div>
+        <span class="badge bg-secondary ms-2">{{ item.conv.messages.count }}</span>
+      </a>
+    {% empty %}
+      <p class="text-muted">No conversations yet.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

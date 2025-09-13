@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "blog/base.html" %}
 
 {% block title %}{{ request.user.username }}'s Profile -Blog{% endblock %}
 
@@ -37,7 +37,7 @@
                        class="badge  text-danger text-decoration-none bg-light">
                         {% get_icon "inbox" %} Inbox
                     </a>
-                    <a href="{% url 'home' %}"
+                    <a href="{% url 'activity_page' %}"
                        class="badge  text-danger text-decoration-none bg-light">
                         {% get_icon "requote" %} Activity
                     </a>
@@ -70,7 +70,11 @@
                             placeholder="Describe the whole content .."
                             required></textarea>
                     </div>
-                    <div class="d-grid gap-2">
+                    <div class="mb-3 ps-2">
+                          <input type="file" name="image" class=" form-control form-control-sm  border-0" accept="image/*">
+                    </div>
+
+                    <div class="d-grid gap-2 px-2">
                         <button type="submit" class="btn btn-sm btn-danger ">Post</button>
                     </div>
                 </form>
@@ -95,37 +99,43 @@
                     <div class="list-group">
                         {% for post in items %}
 
-                        <div class="list-group-item d-flex justify-content-between align-items-center  mb-2 bg-light border-0 rounded ">
+                        <div
+                                class="list-group-item d-flex justify-content-between align-items-start  mb-2  border rounded ">
                             <div>
                                 <div class="mb-2">
-                                <span class="badge bg-light py-1 text-dark border ">
-                                {{ post.created_at }}
+                                <span class="badge bg-bluelight py-1 text-info  " style="border-radius:5px;">
+                                    {{ post.created_at }}
                                 </span>
                                 </div>
                                 <div class=""><b>{{ post.title|truncatewords:8 }}</b>
                                        <small> <a href="{% url 'post_detail' post.pk %}">
                                             main post {% get_icon 'post_new' size='12' %}</a></small>
                                 </div>
+                                <div class="pt-2">
+                                     <button type="button"
+                                             class="btn btn-link bg-bluelight text-primary border-0 tiny-text btn-sm text-decoration-none "
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editModal{{ post.pk }}">
+                                        <b>{% get_icon "edit_post" size='13' %} Edit</b>
+                                    </button>
+
+                                    <button type="button"
+                                            class=" btn btn-link bg-bluelight text-danger border-0 tiny-text btn-sm text-decoration-none  "
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal{{ post.pk }}">
+                                        <b>{% get_icon "post_del" size='13' %} Delete</b>
+                                    </button>
+                                </div>
                             </div>
 
 
-                            <div>
-                                <div class=" d-grid gap-2 mb-2">
-                                    <!-- Edit Button -->
-                                    <button type="button" class="btn btn-sm btn-primary  "
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editModal{{ post.pk }}">
-                                        <B>{% get_icon "edit_post" %}</B>
-                                    </button>
-                                </div>
-                                <!-- Delete Button -->
-                                <div class="d-grid gap-2">
-                                    <button type="button" class="btn btn-sm  btn-danger  "
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal{{ post.pk }}">
-                                        <B>{% get_icon "post_del" %}</B>
-                                    </button>
-                                </div>
+                            <div class="p-1 pt-3">
+                                <span>
+                                    {% if post.image %}
+                                        <img src="{{ post.image.url }}" class="img-fluid p-0  rounded bg-light"
+                                         alt="post image" style="height:60px;!important">
+                                    {% endif %}
+                                </span>
                             </div>
                         </div>
 
@@ -133,21 +143,64 @@
                         <div class="modal fade" id="editModal{{ post.pk }}" tabindex="-1">
                             <div class="modal-dialog">
                                 <div class="modal-content">
-                                    <form method="post" action="{% url 'edit_post' post.pk %}">
+                                    <form id="{{ post.pk }}" method="post" action="{% url 'edit_post' post.pk %}"
+                                           enctype="multipart/form-data">
                                         {% csrf_token %}
                                         <div class="modal-header">
                                             <h5 class="modal-title">Edit Post</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="mb-3">
+                                            <div class="mb-1">
                                                 <label class="form-label">Title</label>
                                                 <input type="text" name="title" value="{{ post.title }}"
                                                        class="form-control" required>
                                             </div>
-                                            <div class="mb-3">
+
+                                            <div>
+
+                                                <input id="id_post_image_{{ post.pk }}" type="file" name="image"
+                                                        class="form-control form-control-sm border-0" accept="image/*" data-preview="#image_preview_{{ post.pk }}">
+
+                                                <div class="d-flex justify-content-start align-items-start pt-2 ">
+
+                                                     <div class="form-label p-2">
+                                                         {% if post.image %}
+                                                            <input type="hidden" name="existing_image" value="{{ post.image.name }}">
+                                                            <p class="border rounded">
+
+                                                                <small class="ps-2"> Attached image</small>
+                                                                 <br>
+                                                                <img src="{{ post.image.url }}" style="height:80px;"
+                                                                     class="img-fluid p-1 " alt="post image">
+
+                                                            </p>
+
+                                                         {% else %}
+                                                            <span class="text-danger p-1 ">
+                                                                <small>No image attached</small>
+                                                            </span>
+                                                         {% endif %}
+                                                     </div>
+
+                                                    <div class="border mt-2 ms-4  rounded">
+
+                                                         <small class="ps-1">Current choice</small><br>
+                                                         <div id="image_preview_{{ post.pk }}"
+                                                              class="img-fluid m-0 p-0"
+                                                              alt="post image"></div>
+
+                                                    </div>
+
+                                                </div>
+
+
+
+                                            </div>
+
+                                            <div class="my-0">
                                                 <label class="form-label">Content</label>
-                                                <textarea name="content" class="form-control" rows="6" required>{{ post.content}}</textarea>
+                                                <textarea name="content" class="form-control" rows="3" required>{{post.content}}</textarea>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -159,6 +212,8 @@
                                 </div>
                             </div>
                         </div>
+
+
 
                         <!-- Delete Modal -->
                         <div class="modal fade" id="deleteModal{{ post.pk }}" tabindex="-1">
@@ -191,12 +246,12 @@
                 {% else %}
                      {% for requote in items %}
 
-                        <div class="card mb-3 border-info">
+                        <div class="card mb-3 border">
 
-                            <div class="card-body">
+                            <div class="card-body ">
                                 <p><strong>{{ requote.user.username }} (You)</strong> requoted:</p>
                                 <p class="fst-italic">{{ requote.caption }}</p>
-                                <div class="bg-light p-2">
+                                <div class="bg-bluelight shadow-sm rounded p-2">
                                     <div class = "d-flex justify-content-start align-items-center mb-2">
                                         <div>
                                             <img class="comment-thumbnail"
@@ -227,7 +282,6 @@
                                         <p class=""><small>{{ requote.post.content|truncatewords:15 }} <a href="{% url 'post_detail' requote.post.pk %}">
                                                     main post {% get_icon 'post_new' size='12' %}
                                                 </a></small></p>
-
 
                                     </div>
                                     <!-- Delete Button -->
@@ -268,4 +322,29 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("input[type='file'][data-preview]").forEach(function(fileinput){
+        fileinput.addEventListener("change", function(){
+            const previewSelector = fileinput.getAttribute("data-preview");
+            const imagePreview = document.querySelector(previewSelector);
+
+            const file = fileinput.files[0];
+            if(file){
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.innerHTML = `<img class="img-fluid p-1" src="${e.target.result}"
+                    style="height: 80px;"/>`;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.innerHTML = "";
+            }
+        });
+    });
+});
+</script>
+
+
 {% endblock %}

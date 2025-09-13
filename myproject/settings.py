@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'blog.apps.BlogConfig', #our app blog
+
+    'blog.apps.BlogConfig',
+    'bin',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +69,7 @@ ROOT_URLCONF = 'myproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # 'DIRS': [BASE_DIR / "templates"],  # project-level templates folder
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {

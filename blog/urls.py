@@ -16,6 +16,9 @@ urlpatterns = [
     path('post/<int:pk>/like/', views.toggle_like, name='toggle_like'),
     path('post/<int:pk>/requote/', views.requote_post, name='requote_post'),
     path('requote/<int:pk>/delete/', views.delete_requote, name='delete_requote'),
+    path('profile/activity/', views.activity_page, name='activity_page'),
+    path('profile/activity/delete/<int:pk>/<str:activity_type>/', views.delete_activity, name='delete_activity' ),
+
 
     #auth urls
 

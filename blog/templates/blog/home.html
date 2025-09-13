@@ -1,11 +1,11 @@
-{% extends "base.html" %}
+{% extends "blog/base.html" %}
 
 {% block title %}Home Page -Blog{% endblock %}
 
 {% block content %}
 
 {% for post in posts %}
-<div class="card shadow bg-custom-post-head mb-3 desktop-card" style="width: 94%; margin: 25px 15px; border:none;">
+<div class="card shadow bg-custom-post-head my-3 desktop-card" style="width: 94%; margin: 10px 10px; border:none;">
     <div class="card-body">
         <div class="d-flex justify-content-between">
             <div class="w-100 pb-0">
@@ -26,6 +26,12 @@
                     </div>
 
                     <h4 class="card-title text-info py-2 ps-2 rounded "><b>{{ post.title }}</b></h4>
+                    {% if post.image %}
+                        <span class="p-2">
+                            <img src="{{post.image.url}}" class="img-fluid p-0  rounded bg-light"
+                             alt="post image" style="height:100px;!important">
+                        </span>
+                    {% endif %}
                     <p class="card-text text-muted text-break text-wrap ps-2 ">
                         <small>{{ post.content|truncatewords:50 }}</small>
                     </p>
@@ -75,15 +81,18 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
                                         <div class="modal-body" >
-                                            <textarea name="caption" class="form-control" rows="3" placeholder="Add your caption..."></textarea>
-                                            <hr>
-                                            <div class="border p-2 border text-start " >
-                                                <h6 class="bg-custom-title text-dark text-start p-2 rounded">{{ post.title }}</h6>
-                                                <p class="text-muted text-wrap text-start fs-6">
+
+                                            <textarea name="caption" class="form-control border-0" rows="2"
+                                                      placeholder="Add your caption..."></textarea>
+
+                                            <div class=" p-2 bg-bluelight text-start rounded" >
+                                                <h6 class=" text-dark text-start p-2 ">{{ post.title }}</h6>
+                                                <p class="text-muted text-wrap text-start fs-6 px-2">
                                                     {{ post.content|truncatewords:10 }}</p>
                                             </div>
+
                                         </div>
-                                        <div class="modal-footer d-flex">
+                                        <div class="modal-footer border-0 d-flex">
                                             <button type="button" class="btn btn-danger text-light" data-bs-dismiss="modal">Cancel
                                             </button>
                                             <button type="submit" class="btn btn-primary text-light">Requote</button>

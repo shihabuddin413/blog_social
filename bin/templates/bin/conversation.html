@@ -1,0 +1,119 @@
+{% extends "bin/base.html" %}
+{% load app_icons %}
+{% block content %}
+<div class="pt-2 mx-0 mb-0 pb-0" id='chat-body'>
+
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-2 sticky-top border-bottom" style="background:white;">
+
+    <div class="border-bottom-0 p-2 d-flex align-items-center sticky-top">
+      <img src="{{ other.userprofile.profile_image.url }}"
+           class="rounded-circle me-2 border p-1 border-2 border-danger"
+           style="height:30px; width:30px; object-fit:cover;">
+      <b>{{ other.username }}</b>
+    </div>
+
+    <div>
+        <a href="{% url 'bin_inbox' %}" class="pb-2 pe-3 text-decoration-none">
+        {% get_icon 'inbox' %} All Conversations
+        </a>
+    </div>
+  </div>
+
+  <div >
+    <!-- {{ msg.created_at|date:"M d, H:i" }} -->
+      <!--                <span class="badge bg-light text-dark">{{ msg.sender.username }}</span>-->
+
+    <div class='px-2'>
+      {% for msg in messages %}
+        <div>
+           {% if msg.sender == request.user %}
+
+            <div class="d-flex justify-content-end my-1 ">
+                <p class="border text-dark text-end p-2 px-4 m-0 d-inline-block"
+                   style="white-space: pre-line; border-radius:20px; ">{{ msg.text|linebreaksbr }}</p>
+            </div>
+
+            <div class=" d-flex justify-content-end my-1">
+                {% if msg.attachment %}
+                    <a href="{{ msg.attachment.url }}" target="_blank">
+                      <img src="{{ msg.attachment.url }}"
+                           class="img-fluid rounded shadow-sm my-2"
+                           style="max-height:130px; object-fit:cover;">
+
+                    </a>
+                {% endif %}
+            </div>
+
+           {% else %}
+            <div class="d-flex justify-content-start my-1">
+                <p class=" bg-danger  text-light text-start p-2 px-3  m-0"
+                   style="white-space: pre-line; border-radius:20px; ">{{ msg.text|linebreaksbr }}</p>
+            </div>
+            <div class="d-flex justify-content-start">
+                {% if msg.attachment %}
+                    <a href="{{ msg.attachment.url }}" target="_blank">
+                      <img src="{{ msg.attachment.url }}"
+                           class="img-fluid rounded shadow-sm my-2"
+                           style="max-height:130px; object-fit:cover;">
+                    </a>
+                {% endif %}
+            </div>
+
+           {% endif %}
+
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+
+    <div class=' ps-2 py-3 sticky-bottom mt-3 border-top  shadow' style="background:white;">
+        <div class="ps-1"><small id="file_name" class="text-primary fw-bold flex-grow-1"></small></div>
+        <div>
+            <form method="post" enctype="multipart/form-data"
+            action="{% url 'bin_send_message' conversation.pk %}"
+            class="d-flex align-items-center gap-2">
+        {% csrf_token %}
+
+        <!-- File name display -->
+
+
+        <!-- Textarea -->
+        <textarea name="text" rows="1"
+                  class="form-control flex-grow-1 bg-white"
+                  placeholder="Write a message..." id="id_text" required></textarea>
+
+        <!-- Send button -->
+        <button type="submit" class="btn btn-light text-dark px-3">
+          {% get_icon 'send' %}
+        </button>
+
+        <!-- Attach button -->
+        <input name="attachment" type="file" class="d-none" id="id_attachment">
+        <label for="id_attachment" class="btn btn-light text-danger rounded mb-0 me-2">
+          {% get_icon 'attach' %}
+        </label>
+      </form>
+        </div>
+
+
+    </div>
+
+</div>
+
+<script>
+  // File name preview
+  const fileInput = document.getElementById("id_attachment");
+  const fileNameSpan = document.getElementById("file_name");
+  fileInput.addEventListener("change", () => {
+    fileNameSpan.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : "";
+  });
+
+  // Auto-scroll to latest message
+  const chatBody = document.getElementById("chat-body");
+  if (chatBody) {
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+</script>
+{% endblock %}

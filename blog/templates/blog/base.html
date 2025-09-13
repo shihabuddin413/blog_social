@@ -21,6 +21,7 @@
         }
 
         html,body { height:100%; margin:0; }
+
         .grid-bg {
             min-height:100vh;
             background-color: var(--bg);
@@ -172,7 +173,7 @@
         body {
             width: 100%;         /* mobile full width */
             margin: 0 auto;
-            padding: 5px;
+            padding: 0px;
             box-sizing: border-box;
         }
 
@@ -302,8 +303,8 @@
 
     </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg bg-custom-nav shadow-sm fixed-top">
+<body >
+    <nav class="navbar navbar-expand-lg bg-custom-nav shadow-sm fixed-top m-0 ">
       <div class="container-fluid ">
         <a class="navbar-brand" href="{% url 'home' %}">
             <img class="logo" src="{{ MEDIA_URL }}logo/logov3.png" alt="🅱️log" >
@@ -329,7 +330,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'profile' %}">
+                    <a class="nav-link" href="{% url 'bin_inbox' %}">
                         <span> {% get_icon "inbox" size=24 %} </span>
                         <span>inbox</span>
                     </a>
@@ -376,7 +377,7 @@
 
 </nav>
 
-    <main class="py-5 bg-white">
+    <main class="py-5 bg-white" >
         {% block content %}
             <!--  child template content  -->
         {% endblock %}
@@ -385,7 +386,7 @@
 
 
 
-      <footer class="position-fixed text-center bottom-0 w-100 p-0  ">
+      <footer class="position-fixed text-center bottom-0 w-100 p-0 m-0">
         <div class="d-flex bg-foot justify-content-between align-items-center h-100 ">
           <p class="m-0 w-100 py-2 bg-custom-foot shadow border-light text-lightpro">
                 <span><img class="logo-foot " src="{{ MEDIA_URL }}logo/logov3trans.png" alt="🅱️log" ></span>
