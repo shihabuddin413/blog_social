@@ -24,6 +24,20 @@ def inbox(request):
 
 
 @login_required
+def search_users(request):
+    query = request.GET.get("q", "")
+    users = []
+    if query:
+        users = User.objects.filter(
+            Q(username__icontains=query) |
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query)
+        ).exclude(pk=request.user.pk)[:10]  # exclude myself, limit results
+
+    return render(request, "bin/search_results.html", {"users": users, "query": query})
+
+
+@login_required
 def conversation_detail(request, pk):
     conv = get_object_or_404(Conversation, pk=pk, participants=request.user)
     messages = conv.messages.select_related('sender').all()

@@ -1,6 +1,7 @@
 {% extends "bin/base.html" %}
 {% load app_icons %}
 {% block content %}
+
 <div class="pt-2 mx-0 mb-0 pb-0" id='chat-body'>
 
   <!-- Page Header -->
@@ -68,7 +69,7 @@
 
   </div>
 
-    <div class=' ps-2 py-3 sticky-bottom mt-3 border-top  shadow' style="background:white;">
+    <div class=' ps-2 py-3 fixed-bottom mt-3 border-top  shadow' style="background:white;">
         <div class="ps-1"><small id="file_name" class="text-primary fw-bold flex-grow-1"></small></div>
         <div>
             <form method="post" enctype="multipart/form-data"

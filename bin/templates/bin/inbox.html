@@ -2,6 +2,14 @@
 {% block content %}
 <div class="container mt-4">
   <h4>BIN <span class="text-danger">—</span> Inbox</h4>
+
+  <div class="mb-3">
+    <form method="get" action="{% url 'bin_search' %}" class="d-flex">
+      <input type="text" name="q" class="form-control me-2" placeholder="Search users...">
+      <button type="submit" class="btn btn-outline-primary">Search</button>
+    </form>
+  </div>
+
   <div class="list-group mt-3">
     {% for item in conversations %}
       <a href="{% url 'bin_conversation' item.conv.pk %}"

@@ -7,4 +7,6 @@ urlpatterns = [
     path('conversation/new/<int:user_id>/', views.start_conversation_with, name='bin_start_with'),
     path('conversation/<int:pk>/send/', views.send_message, name='bin_send_message'),
     path('conversation/<int:pk>/delete/', views.delete_conversation, name='bin_delete_conversation'),
+    path("search/", views.search_users, name="bin_search"),
+
 ]
