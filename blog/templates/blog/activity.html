@@ -8,58 +8,140 @@
 {% load app_icons %}
 {% load humanize %}
 
-<div class="container m-0 p-0" style="max-height: 90vh; overflow-y: auto;">
+<div class="container m-0 p-0" style="max-height: 90vh;">
 
-  <div class="sticky-top bg-light text-danger p-3 " style="z-index: 1020;">
-    <h3 class="mb-0 pt-2">{{ request.user.username }}'s Activity</h3>
+  <div class="bg-white border-4 border-bottom border-light text-dark pt-3 pb-2 px-2 text-center actitvity_res">
+    <h6 class="mb-0 pt-2">Your Activity</h6>
   </div>
 
-  <div class="px-1 pt-3 ">
-    {% for act in activities %}
-      <div class="card mb-3  border-0">
-        <div class="card-body border-bottom">
+  <div class="px-3 act_cont " style="padding-bottom:4rem; padding-top:5rem;">
 
-          {% if act.activity_type == "post" %}
-            <strong class="text-primary bg-light">{% get_icon 'post_new' %} You posted:
-              <form method="post" action="{% url 'delete_activity' act.pk act.activity_type %}">
-                {% csrf_token %}
-                <a class="btn btn-link btn-sm text-danger p-1 ps-4">{% get_icon 'post_del' %}Remove</a>
-              </form>
-            </strong>
-            <p>{{ act.title }}</p>
-          {% elif act.activity_type == "requote" %}
-            <strong class="text-primary bg-light">{% get_icon 'requote' %} You requoted:
-              <form method="post" action="{% url 'delete_activity' act.pk act.activity_type %}">
-                {% csrf_token %}
-                <a class="btn btn-link btn-sm text-danger p-1 ps-4">{% get_icon 'post_del' %}Remove</a>
-              </form>
-            </strong>
-            <blockquote class="fst-italic">{{ act.caption }}</blockquote>
-            <p>Original: {{ act.post.title }}</p>
-          {% elif act.activity_type == "comment" %}
-            <strong class="text-primary bg-light">{% get_icon 'inbox' %} You commented:
-              <form method="post" action="{% url 'delete_activity' act.pk act.activity_type %}">
-                {% csrf_token %}
-                <a class="btn btn-link btn-sm text-danger p-1 ps-4">{% get_icon 'post_del' %}Remove</a>
-              </form>
-            </strong>
-            <p>"{{ act.text }}" on post <em>{{ act.post.title }}</em></p>
-          {% elif act.activity_type == "like" %}
-            <strong class="text-primary bg-light">{% get_icon 'thumb' %} You thumbed:
-              <form method="post" action="{% url 'delete_activity' act.pk act.activity_type %}">
-                {% csrf_token %}
-                <a class="btn btn-link btn-sm text-danger p-1 ps-4">{% get_icon 'post_del' %}Remove</a>
-              </form>
-            </strong>
-            <p>{{ act.post.title }}</p>
-          {% endif %}
+    {% for date, acts in activities.items %}
 
-          <small class="text-muted">At {{ act.created_at }}</small>
-
-        </div>
+      <div class="pb-2">
+        <small class="text-muted">{{ date }}</small>
       </div>
-    {% empty %}
+
+      <ol class="list-group">
+      {% for act in acts %}
+
+            {% if act.activity_type == "post" %}
+              <li class="list-group-item p-0">
+              <div class="card border-0  my-0">
+                <div class="card-body">
+                  <!-- Activity Header -->
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="text-primary mb-0">
+                      {% get_icon 'post_new' %} You posted
+                    </h6>
+                    <form method="post" action="{% url 'delete_activity' act.pk act.activity_type %}" class="m-0">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-link btn-sm text-danger p-1 d-flex align-items-center gap-1">
+                        {% get_icon 'post_del' %} Remove
+                      </button>
+                    </form>
+                  </div>
+                  <!-- Activity Title -->
+                  <p class="mt-1 mb-0 fw-semibold text-dark">
+                    {{ act.title }}
+                  </p>
+                </div>
+             </div>
+              </li>
+
+            {% elif act.activity_type == "requote" %}
+              <li class="list-group-item p-0">
+              <div class="card border-0  my-0">
+                <div class="card-body">
+
+                  <!-- Activity Header -->
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="text-primary mb-0 d-flex align-items-center gap-2">
+                      {% get_icon 'requote' %} You requoted
+                    </h6>
+                    <form method="post" action="{% url 'delete_activity' act.pk act.activity_type %}" class="m-0">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-link btn-sm text-danger p-1 d-flex align-items-center gap-1">
+                        {% get_icon 'post_del' %} Remove
+                      </button>
+                    </form>
+                  </div>
+
+                  <!-- Activity Content -->
+                  <blockquote class="fst-italic mt-2 mb-2 p-2 bg-light rounded">
+                    {{ act.caption }}
+                  </blockquote>
+
+                  <!-- Original Post Reference -->
+                  <p class="mb-0 text-muted">Original: <strong>{{ act.post.title }}</strong></p>
+                </div>
+              </div>
+              </li>
+
+            {% elif act.activity_type == "comment" %}
+              <li class="list-group-item p-0">
+              <div class="card border-0  my-0">
+              <div class="card-body">
+
+                <!-- Activity Header -->
+                <div class="d-flex justify-content-between align-items-center">
+                  <h6 class="text-primary mb-0 d-flex align-items-center gap-2">
+                    {% get_icon 'inbox' %} You commented
+                  </h6>
+                  <form method="post" action="{% url 'delete_activity' act.pk act.activity_type %}" class="m-0">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-link btn-sm text-danger p-1 d-flex align-items-center gap-1">
+                      {% get_icon 'post_del' %} Remove
+                    </button>
+                  </form>
+                </div>
+
+                <!-- Comment Content -->
+
+                <p class="mt-2 mb-1">
+                  "{{ act.text }}" on post <br><em class="text-danger">{{ act.post.title }}</em>
+                </p>
+              </div>
+            </div>
+              </li>
+
+            {% elif act.activity_type == "like" %}
+              <li class="list-group-item p-0">
+              <div class="card border-0  my-0">
+                <div class="card-body">
+
+                  <!-- Activity Header -->
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="text-primary mb-0 d-flex align-items-center gap-2">
+                      {% get_icon 'thumb' %} You thumbed
+                    </h6>
+                    <form method="post" action="{% url 'delete_activity' act.pk act.activity_type %}" class="m-0">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-link btn-sm text-danger p-1 d-flex align-items-center gap-1">
+                        {% get_icon 'post_del' %} Remove
+                      </button>
+                    </form>
+                  </div>
+
+                  <!-- Post Reference -->
+                  <p class="mt-2 mb-0">
+                    {{ act.post.title }}
+                  </p>
+
+                </div>
+              </div>
+              </li>
+
+            {% endif %}
+
+      {% endfor %}
+      </ol>
+
+      <div class="mb-4"></div>
+
+      {% empty %}
       <p>No activity yet.</p>
+
     {% endfor %}
   </div>
 

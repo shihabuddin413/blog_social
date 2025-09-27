@@ -5,6 +5,7 @@ from django.contrib.auth.views import LoginView
 from django.shortcuts import render,redirect, get_object_or_404, redirect
 from django.urls import reverse
 from itertools import chain
+from collections import defaultdict
 from .models import Activity
 from django.utils.timezone import now
 
@@ -192,7 +193,23 @@ def activity_page(request):
         reverse=True
     )
 
-    return render(request, "blog/activity.html", {"activities": activities})
+    # Group by date
+    activity_date_listgroup = defaultdict(list)
+
+
+    for act in activities:
+        act_date = act.created_at.date()  # YYYY-MM-DD
+        activity_date_listgroup[act_date].append(act)
+
+    # Sort the dictionary by date descending
+    activity_date_listgroup = dict(
+        sorted(activity_date_listgroup.items(), key=lambda x: x[0], reverse=True)
+    )
+
+
+
+
+    return render(request, "blog/activity.html", {"activities": activity_date_listgroup})
 
 
 

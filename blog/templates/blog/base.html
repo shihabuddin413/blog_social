@@ -12,12 +12,24 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap" rel="stylesheet">
+
     <style>
 
         :root {
             --cell: 20px;         /* size of each square */
             --line-color: whitesmoke;/* grid line color */
             --bg: white;        /* background color */
+        }
+
+
+        * {
+          font-family: "Syne", sans-serif;
+          font-optical-sizing: auto;
+          font-weight: 400;
+          font-style: normal;
         }
 
         html,body { height:100%; margin:0; }
@@ -118,6 +130,10 @@
           background: #e8f0fc66;
         }
 
+        .bg-bl {
+          background: #e8f0fc;
+        }
+
         .pm-zero {
           padding:0 ;
           margin:0;
@@ -167,6 +183,14 @@
             border:0;    /* active border */
         }
 
+        .actitvity_res{
+           position:fixed;
+           top:3rem;
+           left:0;
+           right:0;
+           z-index: 1020;
+        }
+
 
 
         /* Mobile-first (default) */
@@ -199,6 +223,21 @@
                 display: block;
             }
 
+            .actitvity_res{
+               position:fixed;
+               top:0;
+               left:0;
+               right:0;
+               z-index: 1020;
+               border-bottom: 1px solid gray;
+            }
+
+            .act_cont{
+              padding-left: 5rem !important;
+            }
+
+
+
             .navbar {
                 width: 400px;
                 height: 100vh;
@@ -213,6 +252,7 @@
                 background: #fff !important;
                 padding-left:200px;
                 overflow-y: auto;
+                margin-top:2rem;
             }
 
             /* Container-fluid as flex column */
@@ -329,8 +369,28 @@
                         <span>{{ user.username }}</span>
                     </a>
                 </li>
+                <li class="nav-item bg-white ">
+                    <div class="ms-3 ps-2 py-1 border-2 border-start border-info">
+                        <a href="{% url 'bin_inbox' %}"
+                           class="d-none d-md-inline  text-decoration-none text-muted">
+                            <small>Inbox</small>
+                        </a>
+                    </div>
+                    <div class="ms-3 ps-2 py-1 border-2 border-start border-info">
+                        <a href="{% url 'activity_page' %}"
+                           class="d-none d-md-inline text-decoration-none text-muted">
+                            <small>Activity</small>
+                        </a>
+                    </div>
+                    <div class="ms-3 ps-2 py-1 border-2 border-start border-info">
+                        <a href="{% url 'edit_profile' %}"
+                           class="d-none d-md-inline text-decoration-none text-muted">
+                           <small>Edit Profile</small>
+                        </a>
+                    </div>
+                </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'bin_inbox' %}">
+                    <a class="nav-link d-inline d-md-none" href="{% url 'bin_inbox' %}">
                         <span> {% get_icon "inbox" size=24 %} </span>
                         <span>inbox</span>
                     </a>
@@ -364,6 +424,8 @@
                     </a>
                 </li>
               {% endif %}
+
+
           </ul>
         </div>
       </div>
